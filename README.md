@@ -1,3 +1,7 @@
+# Scaccus
+
+*Formerly C-BitBoard.*
+
 ```text
    ____       ____  _ _   ____                      _
   / ___|     | __ )(_) |_| __ )  ___   __ _ _ __ __| |
@@ -7,7 +11,7 @@
         a bitboard chess engine in C11  ·  UCI  ·  0 dependencies
 ```
 
-[![CI](https://github.com/DakodaStemen/C-BitBoard/actions/workflows/ci.yml/badge.svg)](https://github.com/DakodaStemen/C-BitBoard/actions/workflows/ci.yml)
+[![CI](https://github.com/DakodaStemen/scaccus/actions/workflows/ci.yml/badge.svg)](https://github.com/DakodaStemen/scaccus/actions/workflows/ci.yml)
 [![C](https://img.shields.io/badge/C-C11-555555.svg)](https://en.wikipedia.org/wiki/C11_(C_standard_revision))
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
