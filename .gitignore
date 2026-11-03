@@ -2,3 +2,8 @@ cbitboard
 *.o
 sprt-out/
 slider_bench
+
+# Environment and local tooling
+.env
+.venv/
+__pycache__/
