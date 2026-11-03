@@ -6,16 +6,41 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
+  lint:
+    name: Lint (docs, shell, -Werror)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: DavidAnson/markdownlint-cli2-action@v24
+        with:
+          config: .markdownlint-cli2.jsonc
+          globs: "**/*.md"
+      - name: shellcheck and -Werror compile of every source
+        run: make lint
+
   build:
     name: Build (${{ matrix.cc }})
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         cc: [gcc, clang]
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Build (warnings are errors)
         run: make clean && make CC=${{ matrix.cc }} NATIVE=0 CFLAGS="-std=c11 -Wall -Wextra -Werror -O3"
       - name: Smoke test
@@ -25,8 +50,11 @@ jobs:
   sanitizers:
     name: ASan + UBSan
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run: make debug
       - name: Perft + search under sanitizers
         run: |
@@ -37,8 +65,11 @@ jobs:
   perft:
     name: Perft suite
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run: make NATIVE=0
       - name: Standard positions (startpos, Kiwipete, CPW 3-6)
         run: ./tests/perft_suite.sh ./cbitboard quick | tee -a "$GITHUB_STEP_SUMMARY"
@@ -51,8 +82,11 @@ jobs:
   uci:
     name: UCI conformance
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v7
         with: { python-version: "3.12" }
       - run: pip install chess
@@ -62,8 +96,11 @@ jobs:
   bench:
     name: Benchmark
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - run: make NATIVE=0
       - name: Bench signature (deterministic node count, tests/bench_nodes.txt)
         run: ./tests/bench.sh ./cbitboard

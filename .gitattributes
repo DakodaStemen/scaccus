@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# Binary: never normalised
+*.png binary
+*.gif binary
+*.o binary
+*.a binary

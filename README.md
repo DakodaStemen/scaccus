@@ -27,7 +27,9 @@ make                       # gcc/clang, C11, no dependencies
 ./cbitboard 6              # perft(6) from the start position -> 119,060,324
 ./cbitboard bench          # deterministic search benchmark (default depth 9)
 ./cbitboard hashcheck 5    # asserts incremental Zobrist == full recompute at every perft node
-make test                  # perft suite + bench signature + UCI tests (needs `pip install chess`)
+make setup                 # once: .venv with python-chess (needs uv)
+make test                  # perft suite + bench signature + UCI tests
+make ci                    # lint + test + sanitizer smoke run
 ```
 
 Add `./cbitboard` as a UCI engine in any GUI. Options: `Hash` (MB, default 64), `Clear Hash`, `Move Overhead`.
@@ -82,12 +84,12 @@ Full tier (deeper plies, 12 rows) was run locally in 61 s wall; CI runs the `qui
 
 | Position | Depth | Nodes | Result |
 |---|---|---|---|
-| Start position | 6 | 119,060,324 | ✅ |
-| Kiwipete | 5 | 193,690,690 | ✅ |
-| CPW position 3 | 6 | 11,030,083 | ✅ |
-| CPW position 4 | 5 | 15,833,292 | ✅ |
-| CPW position 5 | 5 | 89,941,194 | ✅ |
-| CPW position 6 | 5 | 164,075,551 | ✅ |
+| Start position | 6 | 119,060,324 | pass |
+| Kiwipete | 5 | 193,690,690 | pass |
+| CPW position 3 | 6 | 11,030,083 | pass |
+| CPW position 4 | 5 | 15,833,292 | pass |
+| CPW position 5 | 5 | 89,941,194 | pass |
+| CPW position 6 | 5 | 164,075,551 | pass |
 
 Plus: `go perft 3` through UCI matches python-chess on 54 random-game positions (0 mismatches), and ASan/UBSan runs are clean in CI.
 
@@ -192,7 +194,7 @@ tests and CI were added on top without changing its move encoding.
 
 **Hyperbola Quintessence** computes slider attacks along one ray (diagonal, anti-diagonal, file) with no tables:
 
-```
+```text
 o = occ & mask;   r = bswap(o)
 attacks = mask & ( (o - 2·bit(sq))  ^  bswap(r - 2·bit(sq ^ 56)) )
 ```
@@ -230,4 +232,4 @@ python tools/match.py --sf /path/to/stockfish --sf-elo 2000 --games 60
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Contributions: see [CONTRIBUTING.md](CONTRIBUTING.md).
+MIT — see [LICENSE](LICENSE). Contributions: see [CONTRIBUTING.md](CONTRIBUTING.md). Security: [SECURITY.md](SECURITY.md). History: [CHANGELOG.md](CHANGELOG.md).
